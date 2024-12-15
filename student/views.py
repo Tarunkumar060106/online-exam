@@ -70,12 +70,32 @@ def take_exam_view(request,pk):
 @user_passes_test(is_student)
 def start_exam_view(request,pk):
     course=QMODEL.Course.objects.get(id=pk)
-    questions=QMODEL.Question.objects.all().filter(course=course)
-    if request.method=='POST':
-        pass
-    response= render(request,'student/start_exam.html',{'course':course,'questions':questions})
-    response.set_cookie('course_id',course.id)
+    subjects=QMODEL.Subject.objects.filter(course=course)
+
+    selected_subject=request.GET.get('subject')
+    selected_section=request.GET.get('section')
+
+    questions=QMODEL.Question.objects.filter(course=course)
+
+    if selected_subject:
+        questions=questions.filter(subject_id=selected_subject)
+    if selected_section:
+        questions=questions.filter(section_id=selected_section)
+
+    response = render(request, 'student/start_exam.html', {
+        'course': course,
+        'questions': questions,
+        'subjects': subjects,
+        'sections': QMODEL.Question.SECTION_ID_CHOICES,
+    })
+    response.set_cookie('course_id', course.id)
     return response
+
+@login_required(login_url='studentlogin')
+@user_passes_test(is_student)
+def select_subject_section_view(request):
+    subject_id = QMODEL.Subject.objects.get('subject_id')
+    sections = QMODEL.Question.objects.filter(subject_id=subject_id)
 
 @login_required(login_url='studentlogin')
 @user_passes_test(is_student)

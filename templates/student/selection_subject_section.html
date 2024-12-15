@@ -1,0 +1,40 @@
+{% extends 'student/studentbase.html' %}
+{% block content %}
+{% load static %}
+
+<head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+
+<div class="jumbotron my-4">
+  <form class="form" action="{% url 'start_exam' %}" method="GET">
+    <!-- Dropdown for Subjects -->
+    <label for="subject-dropdown">Select Subject:</label>
+    <select id="subject-dropdown" name="subject">
+      <option value="">-- Select Subject --</option>
+      {% for subject in subjects %}
+        <option value="{{ subject.id }}" {% if subject.id == request.GET.subject %}selected{% endif %}>
+          {{ subject.subject_name }}
+        </option>
+      {% endfor %}
+    </select> 
+
+    <!-- Section Dropdown -->
+    <label for="section-dropdown">Select Section:</label>
+    <select id="section-dropdown" name="section">
+      <option value="">-- Select Section --</option>
+      {% for section in sections %}
+        <option value="{{ section.id }}" {% if section.id == request.GET.section %}selected{% endif %}>
+          {{ section.section_name }}
+        </option>
+      {% endfor %}
+    </select> 
+
+    <br><br>
+    <input class="btn btn-info btn-lg" type="submit" value="Start Exam">
+  </form>
+</div>
+
+{% endblock content %}

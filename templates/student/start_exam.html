@@ -1,85 +1,74 @@
 {% extends 'student/studentbase.html' %}
 {% block content %}
-{%load static%}
+{% load static %}
 
 <head>
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
-
 </head>
 
-
 <div class="jumbotron my-4">
-
-  <form class="form" autocomplete="off" onsubmit="return saveAns()"  action="/student/calculate-marks" method="POST">
+  <form class="form" autocomplete="off" onsubmit="return saveAns()" action="/student/calculate-marks" method="POST">
     {% csrf_token %}
-    <h1 style="text-align: center;">{{course.course_name}}</h1>
-    {% for q in questions%}
-    <h3 class="text-info">{{ forloop.counter }}. {{q.question}}</h3><h4 style="text-align: right;">[Marks {{q.marks}}]</h4>
-    
-        <input type="hidden" name="csrfmiddlewaretoken" value="C24rUotmdHawVQJL3KrqiWxvti8UffOFYUc8TRbZtLt36AVLdP3jbkzUVe3beRAa">
-        
-        
-          <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option1}}" value="Option1">
-            <label class="form-check-label" for="option1">
-              {{q.option1}}
-            </label>
-          </div>
 
-        
-          <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option2}}" value="Option2">
-            <label class="form-check-label" for="option2">
-              {{q.option2}}
-            </label>
-          </div>
+    <!-- Subject Dropdown -->
+    <label for="subject-dropdown">Select Subject:</label>
+    <select id="subject-dropdown" name="subject" onchange="fetchQuestions()">
+      <option value="">-- Select Subject --</option>
+      {% for subject in subjects %}
+        <option value="{{ subject.id }}" {% if subject.id == request.GET.subject %}selected{% endif %}>
+          {{ subject.subject_name }}
+        </option>
+      {% endfor %}
+    </select> 
 
-        
-          <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option3}}" value="Option3">
-            <label class="form-check-label" for="option3">
-              {{q.option3}}
-            </label>
-          </div>
+    <!-- Section Dropdown -->
+    <label for="section-dropdown">Select Section:</label>
+    <select id="section-dropdown" name="section" onchange="fetchQuestions()">
+      <option value="">-- Select Section --</option>
+      {% for code, label in sections %}
+        <option value="{{ code }}" {% if code == request.GET.section %}selected{% endif %}>
+          {{ label }}
+        </option>
+      {% endfor %}
+    </select> 
 
-        
-          <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option4}}" value="Option4">
-            <label class="form-check-label" for="option4">
-              {{q.option4}}
-            </label>
-          </div>
+    <!-- Placeholder for Questions -->
+    <div id="questions-container">
+      <h4 class="text-info">Please select a subject and section to load questions.</h4>
+    </div>
 
-        {% endfor %}
-        <input class="btn btn-info btn-lg"   type="submit" value="Submit">  
-    </form>
-  </div>
+    <input class="btn btn-info btn-lg" type="submit" value="Submit">
+  </form>
+</div>
 
-<script> 
-    function saveAns(){  
+<script>
+  function fetchQuestions() {
+    // Get selected subject and section
+    const subject = document.getElementById('subject').value;
+    const section = document.getElementById('section').value;
 
-        var ele = document.getElementsByTagName('input'); 
-        for(i = 0; i < ele.length; i++) { 
-            if(ele[i].type="radio") { 
-                if(ele[i].checked){        
-                  setCookie(ele[i].name,ele[i].value,3)
-                }
-            } 
-        } 
-          
+    // Only fetch questions if both subject and section are selected
+    if (subject && section) {
+      $.ajax({
+        url: 'admin-view-question', // Update with your Django endpoint
+        type: 'GET',
+        data: {
+          subject_id: subject,
+          section_id: section,
+        },
+        success: function (data) {
+          // Populate questions dynamically
+          $('#questions-container').html(data);
+        },
+        error: function () {
+          $('#questions-container').html('<p class="text-danger">Error loading questions. Please try again.</p>');
+        }
+      });
     }
-    
-    function setCookie(cname, cvalue, exdays) {
-  var d = new Date();
-  d.setTime(d.getTime() + (exdays*24*60*60*1000));
-  var expires = "expires="+ d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-</script> 
+  }
+</script>
 
 <br><br><br><br><br><br>
 {% endblock content %}

@@ -113,6 +113,7 @@ def teacher_view_question_view(request):
 @login_required(login_url='teacherlogin')
 @user_passes_test(is_teacher)
 def see_question_view(request,pk):
+    course = QMODEL.Course.objects.get(id=pk)
     questions=QMODEL.Question.objects.all().filter(course_id=pk)
     return render(request,'teacher/see_question.html',{'questions':questions})
 
