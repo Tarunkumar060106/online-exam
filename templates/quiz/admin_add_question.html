@@ -36,10 +36,20 @@
         </select>
         <br>
 
-        <!-- Marks Field -->
-        <label for="marks">Marks</label>
-        {% render_field questionForm.marks|attr:'required:true' class="form-control" placeholder="Enter marks for the question" %}
+        <!-- Difficulty Dropdown -->
+        <label for="difficulty">Difficulty</label>
+            {% render_field questionForm.difficulty|attr:'required:true' class="form-control" %}
         <br>
+
+        <!-- Objective Dropdown -->
+        <label for="objective">Objective</label>
+        {% render_field questionForm.objective|attr:'required:true' class="form-control" %}
+        <br>
+
+        <!-- Marks Field -->
+        <!-- <label for="marks">Marks</label>
+        {% render_field questionForm.marks|attr:'required:true' class="form-control" placeholder="Enter marks for the question" %}
+        <br> -->
 
         <!-- Question Field -->
         <label for="question">Question</label>

@@ -32,8 +32,9 @@
       <thead>
         <tr>
           <th>Question</th>
+          <th>Difficulty</th>
+          <th>Objective</th>
           <th>Section</th>
-          <th>Marks</th>
           <th>Delete Question</th>
         </tr>
       </thead>
@@ -41,8 +42,9 @@
         {% for c in questions %}
         <tr>
           <td> {{ c.question }} </td>
+          <td> {{ c.difficulty }} </td>
+          <td> {{ c.objective }} </td>
           <td> {{ c.get_section_id_display }} </td>  <!-- Corrected here -->
-          <td> {{ c.marks }} </td>
           <td><a class="btn btn-primary btn-xs" href="{% url 'delete-question' c.id %}"><span class="glyphicon glyphicon-trash"></span></a></td>
         </tr>
         {% endfor %}

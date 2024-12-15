@@ -29,10 +29,26 @@ class Question(models.Model):
         ('NUM', 'Numerical'),
     ]
 
+    DIFFICULTY_CHOICES = [
+        ('easy', 'Easy'),
+        ('medium', 'Medium'),
+        ('hard', 'Hard'),
+    ]
+
+    OBJECTIVE_TYPE_CHOICES = [
+        ('remember', 'Remember'),
+        ('understand', 'Understand'),
+        ('apply', 'Apply'),
+        ('analyse', 'Analyse'),
+    ]
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    marks = models.PositiveIntegerField()
+    marks = models.PositiveIntegerField(default=4)
+    negative_marks = models.IntegerField(default=-1)
     question = models.CharField(max_length=600)
     section_id = models.CharField(max_length=3, choices=SECTION_ID_CHOICES, default='MCQ')
+    difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES, default='easy')
+    objective = models.CharField(max_length=10, choices=OBJECTIVE_TYPE_CHOICES, default='remember')
 
     # For MCQ-specific questions
     option1 = models.CharField(max_length=200, blank=True, null=True)
