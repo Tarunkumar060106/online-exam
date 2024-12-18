@@ -42,9 +42,9 @@
         {% for c in questions %}
         <tr>
           <td> {{ c.question }} </td>
-          <td> {{ c.difficulty }} </td>
-          <td> {{ c.objective }} </td>
-          <td> {{ c.get_section_id_display }} </td>  <!-- Corrected here -->
+          <td> {{ c.difficulty.name }} </td>  <!-- Access difficulty name -->
+          <td> {{ c.objective.name }} </td>  <!-- Access objective name -->
+          <td> {{ c.section.section_name }} </td>  <!-- Access section name -->
           <td><a class="btn btn-primary btn-xs" href="{% url 'delete-question' c.id %}"><span class="glyphicon glyphicon-trash"></span></a></td>
         </tr>
         {% endfor %}

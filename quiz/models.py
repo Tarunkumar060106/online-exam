@@ -14,59 +14,54 @@ class Subject(models.Model):
     def __str__(self):
         return self.subject_name
     
-    #we dont want sections
-    
-# class Section(models.Model):
-#     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-#     name = models.CharField(max_length=200)
+class Section(models.Model):
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    section_name = models.CharField(max_length=50)
+    def __str__(self):
+        return self.section_name
 
-#     def __str__(self):
-#         return f"{self.course.name} - {self.name}"
+class Difficulty(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+    
+class Objectives(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name 
+    
+class Options(models.Model):
+    question = models.ForeignKey('Question', on_delete=models.CASCADE, related_name='options')
+    option_text = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Option for Q{self.question.id}: {self.option_text}"
 
 class Question(models.Model):
-    SECTION_ID_CHOICES = [
-        ('MCQ', 'Multiple Choice Question'),
-        ('NUM', 'Numerical'),
-    ]
-
-    DIFFICULTY_CHOICES = [
-        ('easy', 'Easy'),
-        ('medium', 'Medium'),
-        ('hard', 'Hard'),
-    ]
-
-    OBJECTIVE_TYPE_CHOICES = [
-        ('remember', 'Remember'),
-        ('understand', 'Understand'),
-        ('apply', 'Apply'),
-        ('analyse', 'Analyse'),
-    ]
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    question = models.CharField(max_length=600)
     marks = models.PositiveIntegerField(default=4)
     negative_marks = models.IntegerField(default=-1)
-    question = models.CharField(max_length=600)
-    section_id = models.CharField(max_length=3, choices=SECTION_ID_CHOICES, default='MCQ')
-    difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES, default='easy')
-    objective = models.CharField(max_length=10, choices=OBJECTIVE_TYPE_CHOICES, default='remember')
-
-    # For MCQ-specific questions
-    option1 = models.CharField(max_length=200, blank=True, null=True)
-    option2 = models.CharField(max_length=200, blank=True, null=True)
-    option3 = models.CharField(max_length=200, blank=True, null=True)
-    option4 = models.CharField(max_length=200, blank=True, null=True)
-    cat = (('Option1', 'Option1'), ('Option2', 'Option2'), ('Option3', 'Option3'), ('Option4', 'Option4'))
-    answer = models.CharField(max_length=200, choices=cat, blank=True, null=True)
-
-    # For Numerical questions
     numerical_answer = models.FloatField(blank=True, null=True)
+    answer = models.ForeignKey('Options', on_delete=models.CASCADE, blank=True, null=True, related_name='correct_answer')
+    difficulty = models.ForeignKey('Difficulty', on_delete=models.CASCADE)
+    objective = models.ForeignKey('Objectives', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.get_section_id_display()}: {self.question}"
     
+
 class Result(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     exam = models.ForeignKey(Course,on_delete=models.CASCADE)
     marks = models.PositiveIntegerField()
     date = models.DateTimeField(auto_now=True)
 
+   

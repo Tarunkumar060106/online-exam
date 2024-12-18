@@ -217,18 +217,41 @@ def admin_question_view(request):
 
 @login_required(login_url='adminlogin')
 def admin_add_question_view(request):
-    questionForm=forms.QuestionForm()
-    if request.method=='POST':
-        questionForm=forms.QuestionForm(request.POST)
+    questionForm = forms.QuestionForm()
+
+    if request.method == 'POST':
+        questionForm = forms.QuestionForm(request.POST)
         if questionForm.is_valid():
-            question=questionForm.save(commit=False)
-            course=models.Course.objects.get(id=request.POST.get('courseID'))
-            question.course=course
-            question.save()       
+            # Save the form but don't commit yet
+            question = questionForm.save(commit=False)
+
+            # Get the course, subject, section, difficulty, and objective based on the posted data
+            course = models.Course.objects.get(id=request.POST.get('courseID'))
+            subject = models.Subject.objects.get(id=request.POST.get('subjectID'))
+            section = models.Section.objects.get(id=request.POST.get('sectionID'))
+            difficulty = models.Difficulty.objects.get(id=request.POST.get('difficultyID'))
+            objective = models.Objectives.objects.get(id=request.POST.get('objectiveID'))
+
+            # Directly get the answer from POST data (adjust based on your model field type)
+            answer = request.POST.get('answer')
+
+            # Assign the related fields to the question instance
+            question.course = course
+            question.subject = subject  # This assumes subject is a ForeignKey
+            question.section = section  # This assumes section is a ForeignKey
+            question.difficulty = difficulty  # This assumes difficulty is a ForeignKey
+            question.objective = objective  # This assumes objective is a ForeignKey
+            question.answer = answer  # Assuming answer is a text field
+
+            # Save the question
+            question.save()
+
+            # Redirect to the page that shows the list of questions (adjust the URL)
+            return HttpResponseRedirect('/admin-view-question')
         else:
-            print("form is invalid")
-        return HttpResponseRedirect('/admin-view-question')
-    return render(request,'quiz/admin_add_question.html',{'questionForm':questionForm})
+            print("Form is invalid")
+
+    return render(request, 'quiz/admin_add_question.html', {'questionForm': questionForm})
 
 
 @login_required(login_url='adminlogin')
@@ -237,10 +260,19 @@ def admin_view_question_view(request):
     return render(request,'quiz/admin_view_question.html',{'courses':courses})
 
 @login_required(login_url='adminlogin')
-def view_question_view(request,pk):
+def view_question_view(request, pk):
     course = models.Course.objects.get(id=pk)
-    questions=models.Question.objects.filter(course=course)
-    return render(request,'quiz/view_question.html',{'questions':questions})
+    questions = models.Question.objects.filter(course=course)
+    sections = models.Section.objects.all()
+    difficulties = models.Difficulty.objects.all()
+    objectives = models.Objectives.objects.all()
+
+    return render(request, 'quiz/view_question.html', {
+        'questions': questions,
+        'sections': sections,
+        'difficulties': difficulties,
+        'objectives': objectives
+    })
 
 @login_required(login_url='adminlogin')
 def delete_question_view(request,pk):
