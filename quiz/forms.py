@@ -1,7 +1,7 @@
 from django import forms
 from . import models
 from django.core.exceptions import ValidationError
-from .models import Options, Section
+from .models import Question, Course, Section, Difficulty, Subject, Objectives
 
 class ContactusForm(forms.Form):
     Name = forms.CharField(max_length=30)
@@ -23,63 +23,73 @@ class SubjectForm(forms.ModelForm):
 
 class QuestionForm(forms.ModelForm):
     courseID = forms.ModelChoiceField(
-        queryset=models.Course.objects.all(),
+        queryset=Course.objects.all(),
         empty_label="Select Course",
         to_field_name="id"
     )
+    subjectID = forms.ModelChoiceField(
+        queryset=Subject.objects.all(),
+        empty_label="Select Subject",
+        to_field_name="id"
+    )
     sectionID = forms.ModelChoiceField(
-        queryset=models.Section.objects.all(),
+        queryset=Section.objects.all(),
         empty_label="Select Section",
         to_field_name="id"
     )
     difficultyID = forms.ModelChoiceField(
-        queryset=models.Difficulty.objects.all(),
+        queryset=Difficulty.objects.all(),
         empty_label="Select Difficulty"
     )
     objectiveID = forms.ModelChoiceField(
-        queryset=models.Objectives.objects.all(),
+        queryset=Objectives.objects.all(),
         empty_label="Select Objective"
     )
 
-    # Fields for the MCQ options
-    option1 = forms.ModelChoiceField(queryset=Options.objects.all(), required=False, label='Option 1')
-    option2 = forms.ModelChoiceField(queryset=Options.objects.all(), required=False, label='Option 2')
-    option3 = forms.ModelChoiceField(queryset=Options.objects.all(), required=False, label='Option 3')
-    option4 = forms.ModelChoiceField(queryset=Options.objects.all(), required=False, label='Option 4')
+    # Only show these fields if the section is MCQ
+    option1 = forms.CharField(max_length=255, required=False, label='Option 1')
+    option2 = forms.CharField(max_length=255, required=False, label='Option 2')
+    option3 = forms.CharField(max_length=255, required=False, label='Option 3')
+    option4 = forms.CharField(max_length=255, required=False, label='Option 4')
 
-    # Numerical answer field
-    numerical_answer = forms.FloatField(required=False, label='Numerical Answer')
-
-    # Answer field for MCQs (Selecting the correct option)
-    answer = forms.ModelChoiceField(
-        queryset=Options.objects.all(), 
-        empty_label="Select Correct Answer", 
-        required=False
+    # Correct answer field (select from the options)
+    correct_option = forms.ChoiceField(
+        choices=[('Option 1', 'Option 1'), 
+                 ('Option 2', 'Option 2'), 
+                 ('Option 3', 'Option 3'), 
+                 ('Option 4', 'Option 4')],
+        required=False,
+        label="Correct Answer"
     )
 
+    # Numerical answer field (only for numerical questions)
+    numerical_answer = forms.FloatField(required=False, label="Numerical Answer")
+
     class Meta:
-        model = models.Question
-        fields = ['courseID', 'sectionID', 'question', 'marks', 'negative_marks', 'difficultyID', 'objectiveID', 'numerical_answer', 'answer', 'option1', 'option2', 'option3', 'option4']
+        model = Question
+        fields = [
+            'courseID', 'sectionID', 'subjectID','question','difficultyID', 'objectiveID', 
+            'numerical_answer', 'correct_option', 
+            'option1', 'option2', 'option3', 'option4'
+        ]
         widgets = {
             'question': forms.Textarea(attrs={'rows': 3, 'cols': 50})
         }
 
-def clean(self):
+    def clean(self):
         cleaned_data = super().clean()
-        section_id = cleaned_data.get("sectionID")
+        section = cleaned_data.get("sectionID")
 
-        # Validate for MCQs
-        if section_id:
-            section = Section.objects.get(id=section_id)  # Ensure Section is also imported
-            if section.section_name == "MCQ":
-                if not any([cleaned_data.get("option1"), cleaned_data.get("option2"), cleaned_data.get("option3"), cleaned_data.get("option4")]):
-                    raise forms.ValidationError("MCQ questions must have at least one option.")
-                answer = cleaned_data.get("answer")
-                if not answer:
-                    raise forms.ValidationError("MCQ questions must have a correct answer selected.")
-                # Ensure the answer is one of the options
-                valid_answers = [cleaned_data.get("option1"), cleaned_data.get("option2"), cleaned_data.get("option3"), cleaned_data.get("option4")]
-                if answer not in valid_answers:
-                    raise forms.ValidationError("The selected correct answer must be one of the provided options.")
-    
+        # Ensure the numerical_answer field is used only for "NUM" sections
+        if section and section.name == "NUM" and any([cleaned_data.get(f"option{i}") for i in range(1, 5)]):
+            raise forms.ValidationError("Options should not be provided for Numerical questions.")
+
+        # Ensure the options and correct answer are required only for "MCQ" questions
+        if section and section.name == "MCQ":
+            if not cleaned_data.get("answer"):
+                raise forms.ValidationError("Correct answer is required for MCQ questions.")
+            if not any([cleaned_data.get(f"option{i}") for i in range(1, 5)]):
+                raise forms.ValidationError("At least one option is required for MCQ questions.")
+
         return cleaned_data
+

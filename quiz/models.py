@@ -33,26 +33,23 @@ class Objectives(models.Model):
 
     def __str__(self):
         return self.name 
-    
-class Options(models.Model):
-    question = models.ForeignKey('Question', on_delete=models.CASCADE, related_name='options')
-    option_text = models.CharField(max_length=255)
-    is_correct = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Option for Q{self.question.id}: {self.option_text}"
 
 class Question(models.Model):
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, default=1)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, default=1)
     question = models.CharField(max_length=600)
     marks = models.PositiveIntegerField(default=4)
     negative_marks = models.IntegerField(default=-1)
     numerical_answer = models.FloatField(blank=True, null=True)
-    answer = models.ForeignKey('Options', on_delete=models.CASCADE, blank=True, null=True, related_name='correct_answer')
     difficulty = models.ForeignKey('Difficulty', on_delete=models.CASCADE)
     objective = models.ForeignKey('Objectives', on_delete=models.CASCADE)
+    option1 = models.CharField(max_length=50)
+    option2 = models.CharField(max_length=50)
+    option3 = models.CharField(max_length=50)
+    option4 = models.CharField(max_length=50)
+    correct_option = models.CharField(max_length=50, blank=True, default=None)
 
     def __str__(self):
         return f"{self.get_section_id_display()}: {self.question}"

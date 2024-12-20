@@ -218,7 +218,7 @@ def admin_question_view(request):
 @login_required(login_url='adminlogin')
 def admin_add_question_view(request):
     questionForm = forms.QuestionForm()
-
+    print(request.POST)
     if request.method == 'POST':
         questionForm = forms.QuestionForm(request.POST)
         if questionForm.is_valid():
@@ -232,16 +232,22 @@ def admin_add_question_view(request):
             difficulty = models.Difficulty.objects.get(id=request.POST.get('difficultyID'))
             objective = models.Objectives.objects.get(id=request.POST.get('objectiveID'))
 
-            # Directly get the answer from POST data (adjust based on your model field type)
-            answer = request.POST.get('answer')
-
             # Assign the related fields to the question instance
             question.course = course
             question.subject = subject  # This assumes subject is a ForeignKey
             question.section = section  # This assumes section is a ForeignKey
             question.difficulty = difficulty  # This assumes difficulty is a ForeignKey
             question.objective = objective  # This assumes objective is a ForeignKey
-            question.answer = answer  # Assuming answer is a text field
+
+            # Handle the objective-related fields: options or numerical answer        
+            if request.POST.get('sectionID') == 'MCQ':  # Assuming MCQ type
+                question.option1 = request.POST.get('option1')
+                question.option2 = request.POST.get('option2')
+                question.option3 = request.POST.get('option3')
+                question.option4 = request.POST.get('option4')
+                question.correct_answer = request.POST.get('answer')  # Correct option selected
+            elif request.POST.get('sectionID') == 'NUM':  # Assuming Numerical question
+                question.numerical_answer = request.POST.get('numerical_answer')
 
             # Save the question
             question.save()
@@ -249,6 +255,7 @@ def admin_add_question_view(request):
             # Redirect to the page that shows the list of questions (adjust the URL)
             return HttpResponseRedirect('/admin-view-question')
         else:
+            print(questionForm.errors)
             print("Form is invalid")
 
     return render(request, 'quiz/admin_add_question.html', {'questionForm': questionForm})
