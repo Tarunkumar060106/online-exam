@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',
@@ -157,3 +158,4 @@ EMAIL_HOST_PASSWORD = 'xyz' # host email password required
 # this process is required because google blocks apps authentication by default
 EMAIL_RECEIVING_USER = ['to@gmail.com'] # email on which you will receive messages sent from website
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATICSTORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
