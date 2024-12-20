@@ -30,7 +30,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '.vercel.app',
     'localhost',
-    'vizhuchelvam.up.railway.app'
+    'vizhuchelvam.up.railway.app',
+    '127.0.0.1'
 ]
 
 CSRF_TRUSTED_ORIGINS = [ 'https://vizhuchelvam.up.railway.app' ]
