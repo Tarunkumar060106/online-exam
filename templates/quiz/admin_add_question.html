@@ -57,7 +57,10 @@
         <div class="form-group">
             <!-- Section Field -->
             <label id="section" for="section">Section</label>
-            {% render_field questionForm.sectionID|attr:'required:true' class="form-control" %}
+            <select id="sectionID" name="sectionID">
+                <option value="">Select Section</option>
+                <!-- The sections will be dynamically populated by the AJAX response -->
+            </select>
         </div>
 
         <div class="form-group">
@@ -124,59 +127,54 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const sectionDropdown = document.getElementById('sectionType');
-        const mcqFields = document.getElementById('mcqFields');
-        const numericalField = document.getElementById('numericalField');
-
-        // Fetch section options from the backend
-        fetch('get_sections') // Adjust the URL to your actual endpoint
-            .then(response => response.json())
-            .then(data => {
-                // Populate the section dropdown
-                sectionDropdown.innerHTML = '<option value="">Select Section</option>';
-                data.forEach(section => {
-                    const option = document.createElement('option');
-                    option.value = section.id; // Use the unique ID for the section
-                    option.textContent = section.section_name;
-                    sectionDropdown.appendChild(option);
-                });
-            })
-            .catch(error => console.error('Error fetching sections:', error));
-
-        // Handle section selection change
-        sectionDropdown.addEventListener('change', function () {
-            const selectedOption = this.options[this.selectedIndex].text.toLowerCase();
-
-            if (selectedOption.includes('mcq')) {
-                // Show MCQ fields and hide Numerical fields
-                mcqFields.style.display = 'block';
-                numericalField.style.display = 'none';
-                document.querySelectorAll('#mcqFields input').forEach(input => {
-                    input.setAttribute('required', true);
-                });
-                document.querySelector('#numericalField input')?.removeAttribute('required');
-            } else if (selectedOption.includes('numerical')) {
-                // Show Numerical fields and hide MCQ fields
-                mcqFields.style.display = 'none';
-                numericalField.style.display = 'block';
-                document.querySelectorAll('#mcqFields input').forEach(input => {
-                    input.removeAttribute('required');
-                });
-                document.querySelector('#numericalField input')?.setAttribute('required', true);
-            } else {
-                // Hide both MCQ and Numerical fields for unselected/other options
-                mcqFields.style.display = 'none';
-                numericalField.style.display = 'none';
-                document.querySelectorAll('input').forEach(input => {
-                    input.removeAttribute('required');
+    $(document).ready(function () {
+        // Fetch and populate sections when the page loads
+        $.ajax({
+            url: "{% url 'get_sections' %}",
+            method: "GET",
+            success: function (data) {
+                var sectionDropdown = $('#sectionID');
+                sectionDropdown.empty();  // Clear the dropdown
+                sectionDropdown.append('<option value="">Select Section</option>');  // Default option
+                
+                // Add the sections dynamically to the dropdown
+                $.each(data, function (index, section) {
+                    sectionDropdown.append('<option value="' + section.id + '">' + section.section_name + '</option>');
                 });
             }
         });
 
-        // Initial State: Hide all question-specific fields
-        mcqFields.style.display = 'none';
-        numericalField.style.display = 'none';
+        // Handle section change to show/hide fields based on section type
+        $('#sectionID').change(function () {
+            var sectionID = $(this).val();
+            
+            if (sectionID) {
+                $.ajax({
+                    url: "{% url 'get_sections' %}",  // Reuse the same URL if needed for fetching more data
+                    data: { 'section_id': sectionID },
+                    method: "GET",
+                    success: function (data) {
+                        var section = data.find(s => s.id == sectionID);
+                        
+                        // Show or hide the fields based on section type
+                        if (section && section.section_name === 'MCQ') {
+                            $('#mcqFields').show();
+                            $('#numericalField').hide();
+                        } else if (section && section.section_name === 'NUM') {
+                            $('#numericalField').show();
+                            $('#mcqFields').hide();
+                        } else {
+                            $('#mcqFields').hide();
+                            $('#numericalField').hide();
+                        }
+                    }
+                });
+            } else {
+                // Hide both fields if no section is selected
+                $('#mcqFields').hide();
+                $('#numericalField').hide();
+            }
+        });
     });
 </script>
 

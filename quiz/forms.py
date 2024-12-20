@@ -82,11 +82,11 @@ class QuestionForm(forms.ModelForm):
         section = cleaned_data.get("sectionID")
 
         # Ensure the numerical_answer field is used only for "NUM" sections
-        if section and section.name == "NUM" and any([cleaned_data.get(f"option{i}") for i in range(1, 5)]):
+        if section and section.section_name == "NUM" and any([cleaned_data.get(f"option{i}") for i in range(1, 5)]):
             raise forms.ValidationError("Options should not be provided for Numerical questions.")
 
         # Ensure the options and correct answer are required only for "MCQ" questions
-        if section and section.name == "MCQ":
+        if section and section.section_name == "MCQ":
             if not cleaned_data.get("answer"):
                 raise forms.ValidationError("Correct answer is required for MCQ questions.")
             if not any([cleaned_data.get(f"option{i}") for i in range(1, 5)]):
