@@ -50,6 +50,11 @@
     </table>
   </div>
 </div>
-
+<button id="returnButton" class="btn btn-primary">Return</button>
+<script>
+  document.getElementById("returnButton").addEventListener("click", function() {
+    window.location.href = 'admin-question';  
+  });
+</script>
 <br><br><br><br><br><br>
 {% endblock content %}

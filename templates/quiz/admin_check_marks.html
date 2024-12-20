@@ -54,4 +54,10 @@
 </div>
 
 <br><br><br><br><br><br>
+<button id="returnButton" class="btn btn-primary">Return</button>
+<script>
+  document.getElementById("returnButton").addEventListener("click", function () {
+    window.history.back();
+  });
+</script>
 {% endblock content %}

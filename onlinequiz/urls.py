@@ -50,6 +50,7 @@ urlpatterns = [
     path('delete-question/<int:pk>', views.delete_question_view,name='delete-question'),
     
     path('get_sections', views.get_sections,name='get_sections'),
+    #path('get_sections_by_subject', views.get_sections_by_subject,name='get_sections_by_subject')
 
 
 ]

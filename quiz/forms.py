@@ -63,15 +63,20 @@ class QuestionForm(forms.ModelForm):
         label="Correct Answer"
     )
 
+    marks = 4
+    negative_marks = -1
     # Numerical answer field (only for numerical questions)
     numerical_answer = forms.FloatField(required=False, label="Numerical Answer")
 
     class Meta:
         model = Question
         fields = [
-            'courseID', 'sectionID', 'subjectID','question','difficultyID', 'objectiveID', 
+            'courseID', 'subjectID', 'sectionID','difficultyID','objectiveID', 'question',
+            'option1', 'option2', 'option3', 'option4',
             'numerical_answer', 'correct_option', 
-            'option1', 'option2', 'option3', 'option4'
+        ]
+        exclude = [
+            'marks', 'negative_marks'
         ]
         widgets = {
             'question': forms.Textarea(attrs={'rows': 3, 'cols': 50})
@@ -80,14 +85,13 @@ class QuestionForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         section = cleaned_data.get("sectionID")
-
         # Ensure the numerical_answer field is used only for "NUM" sections
         if section and section.section_name == "NUM" and any([cleaned_data.get(f"option{i}") for i in range(1, 5)]):
             raise forms.ValidationError("Options should not be provided for Numerical questions.")
 
         # Ensure the options and correct answer are required only for "MCQ" questions
         if section and section.section_name == "MCQ":
-            if not cleaned_data.get("answer"):
+            if not cleaned_data.get("correct_option"):
                 raise forms.ValidationError("Correct answer is required for MCQ questions.")
             if not any([cleaned_data.get(f"option{i}") for i in range(1, 5)]):
                 raise forms.ValidationError("At least one option is required for MCQ questions.")

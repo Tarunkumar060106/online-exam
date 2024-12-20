@@ -42,70 +42,66 @@
     <form method="POST" autocomplete="off">
         {% csrf_token %}
         
+        <!-- Course Field -->
         <div class="form-group">
-            <!-- Course Field -->
             <label for="course">Course</label>
             {% render_field questionForm.courseID|attr:'required:true' class="form-control" %}
         </div>
-
+    
+        <!-- Subject Field -->
         <div class="form-group">
-            <!-- Subject Field -->
             <label for="subject">Subject</label>
             {% render_field questionForm.subjectID|attr:'required:true' class="form-control" %}
         </div>
-
+    
+        <!-- Section Field -->
         <div class="form-group">
-            <!-- Section Field -->
             <label id="section" for="section">Section</label>
-            <select id="sectionID" name="sectionID">
+            <select id="sectionID" name="sectionID" required>
                 <option value="">Select Section</option>
                 <!-- The sections will be dynamically populated by the AJAX response -->
             </select>
         </div>
-
+    
+        <!-- Difficulty Field -->
         <div class="form-group">
-            <!-- Difficulty Field -->
             <label for="difficulty">Difficulty</label>
             {% render_field questionForm.difficultyID|attr:'required:true' class="form-control" %}
         </div>
-
+    
+        <!-- Objective Field -->
         <div class="form-group">
-            <!-- Objective Field -->
             <label for="objective">Objective</label>
             {% render_field questionForm.objectiveID|attr:'required:true' class="form-control" %}
         </div>
-
+    
+        <!-- Question Field -->
         <div class="form-group">
-            <!-- Question Field -->
             <label for="question">Question</label>
             {% render_field questionForm.question|attr:'required:true' class="form-control" placeholder="Enter your question here" %}
         </div>
-
+    
         <!-- MCQ Fields -->
         <div id="mcqFields" style="display: none;">
             <div class="form-group">
                 <label for="option1">Option 1</label>
                 {% render_field questionForm.option1|attr:'class:form-control' placeholder="Option 1" %}
             </div>
-
             <div class="form-group">
                 <label for="option2">Option 2</label>
                 {% render_field questionForm.option2|attr:'class:form-control' placeholder="Option 2" %}
             </div>
-
             <div class="form-group">
                 <label for="option3">Option 3</label>
                 {% render_field questionForm.option3|attr:'class:form-control' placeholder="Option 3" %}
             </div>
-
             <div class="form-group">
                 <label for="option4">Option 4</label>
                 {% render_field questionForm.option4|attr:'class:form-control' placeholder="Option 4" %}
             </div>
-
             <div class="form-group">
                 <label for="answer">Correct Option</label>
-                <select name="answer" id="id_answer" class="form-control">
+                <select name="correct_option" id="id_answer" class="form-control">
                     <option value="Option 1">Option 1</option>
                     <option value="Option 2">Option 2</option>
                     <option value="Option 3">Option 3</option>
@@ -113,7 +109,7 @@
                 </select>
             </div>
         </div>
-
+    
         <!-- Numerical Answer Field -->
         <div id="numericalField" style="display: none;">
             <div class="form-group">
@@ -121,61 +117,88 @@
                 {% render_field questionForm.numerical_answer|attr:'class:form-control' placeholder="Enter the numerical answer" %}
             </div>
         </div>
-
+    
         <button type="submit" class="btn btn-custom">Add Question</button>
     </form>
+    
 </div>
+<button id="returnButton" class="btn btn-primary">Return</button>
 
 <script>
-    $(document).ready(function () {
-        // Fetch and populate sections when the page loads
-        $.ajax({
-            url: "{% url 'get_sections' %}",
-            method: "GET",
-            success: function (data) {
-                var sectionDropdown = $('#sectionID');
-                sectionDropdown.empty();  // Clear the dropdown
-                sectionDropdown.append('<option value="">Select Section</option>');  // Default option
-                
-                // Add the sections dynamically to the dropdown
-                $.each(data, function (index, section) {
-                    sectionDropdown.append('<option value="' + section.id + '">' + section.section_name + '</option>');
-                });
-            }
-        });
+$(document).ready(function () {
+    // Fetch and populate sections when the page loads
+    // $.ajax({
+    // url: '{% url "get_sections" %}',
+    // method: 'GET',
+    // success: function(data) {
+    //     var sectionSelect = $('#sectionID');
+    //     sectionSelect.empty();  // Clear the existing options
+    //     sectionSelect.append('<option value="">Select Section</option>');  // Default option
 
-        // Handle section change to show/hide fields based on section type
-        $('#sectionID').change(function () {
-            var sectionID = $(this).val();
-            
-            if (sectionID) {
-                $.ajax({
-                    url: "{% url 'get_sections' %}",  // Reuse the same URL if needed for fetching more data
-                    data: { 'section_id': sectionID },
-                    method: "GET",
-                    success: function (data) {
-                        var section = data.find(s => s.id == sectionID);
-                        
-                        // Show or hide the fields based on section type
-                        if (section && section.section_name === 'MCQ') {
-                            $('#mcqFields').show();
-                            $('#numericalField').hide();
-                        } else if (section && section.section_name === 'NUM') {
-                            $('#numericalField').show();
-                            $('#mcqFields').hide();
-                        } else {
-                            $('#mcqFields').hide();
-                            $('#numericalField').hide();
-                        }
-                    }
-                });
-            } else {
-                // Hide both fields if no section is selected
-                $('#mcqFields').hide();
-                $('#numericalField').hide();
-            }
-        });
+    //     // Append each section as an option
+    //     $.each(data, function(index, section) {
+    //         sectionSelect.append('<option value="' + section.id + '">' + section.section_name + '</option>');
+    //     });
+
+    //     // Apply the same class as other select elements
+    //     sectionSelect.addClass('form-control');
+    //     }
+    // });
+
+    $.ajax({
+        url: '{% url "get_sections" %}',
+        method: 'GET',
+        success: function(data) {
+            var sectionSelect = $('#sectionID');
+            sectionSelect.empty();  // Clear the existing options
+            sectionSelect.append('<option value="">Select Section</option>');  // Default option
+
+            // Append each section as an option with the subject name
+            $.each(data, function(index, section) {
+                sectionSelect.append('<option value="' + section.id + '">' + section.section_name + ' (' + section.subject_name + ')</option>');
+            });
+
+            // Apply the same class as other select elements
+            sectionSelect.addClass('form-control');
+        }
     });
+
+
+    // Handle section change to show/hide fields based on section type
+    $('#sectionID').change(function () {
+        var sectionID = $(this).val();
+        
+        if (sectionID) {
+            $.ajax({
+                url: "{% url 'get_sections' %}",  // Reuse the same URL if needed for fetching more data
+                data: { 'section_id': sectionID },
+                method: "GET",
+                success: function (data) {
+                    var section = data.find(s => s.id == sectionID);
+                    
+                    // Show or hide the fields based on section type
+                    if (section && section.section_name === 'MCQ') {
+                        $('#mcqFields').show();
+                        $('#numericalField').hide();
+                    } else if (section && section.section_name === 'NUM') {
+                        $('#numericalField').show();
+                        $('#mcqFields').hide();
+                    } else {
+                        $('#mcqFields').hide();
+                        $('#numericalField').hide();
+                    }
+                }
+            });
+        } else {
+            // Hide both fields if no section is selected
+            $('#mcqFields').hide();
+            $('#numericalField').hide();
+        }
+    });
+});
+document.getElementById("returnButton").addEventListener("click", function() {
+    window.location.href = 'admin-question';  
+  });
 </script>
 
 

@@ -38,17 +38,17 @@ class Question(models.Model):
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, default=1)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, default=1)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    difficulty = models.ForeignKey('Difficulty', on_delete=models.CASCADE)
+    objective = models.ForeignKey('Objectives', on_delete=models.CASCADE)
     question = models.CharField(max_length=600)
     marks = models.PositiveIntegerField(default=4)
     negative_marks = models.IntegerField(default=-1)
-    numerical_answer = models.FloatField(blank=True, null=True)
-    difficulty = models.ForeignKey('Difficulty', on_delete=models.CASCADE)
-    objective = models.ForeignKey('Objectives', on_delete=models.CASCADE)
     option1 = models.CharField(max_length=50)
     option2 = models.CharField(max_length=50)
     option3 = models.CharField(max_length=50)
     option4 = models.CharField(max_length=50)
+    numerical_answer = models.FloatField(blank=True, null=True)
     correct_option = models.CharField(max_length=50)
 
     def __str__(self):

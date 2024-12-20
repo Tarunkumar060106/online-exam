@@ -62,4 +62,10 @@
 
 
 <br><br><br><br><br><br><br><br>
+<button id="returnButton" class="btn btn-primary">Return</button>
+<script>
+  document.getElementById("returnButton").addEventListener("click", function() {
+    window.location.href = '/admin-view-student';  // This goes back to the previous page in the browser history
+  });
+</script>
 {% endblock content %}

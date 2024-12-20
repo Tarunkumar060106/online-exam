@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 from .models import Course
 from django.contrib import messages
 from django.http import JsonResponse
-from .models import Section
+from .models import Section, Subject
 
 
 def home_view(request):
@@ -229,13 +229,14 @@ def admin_add_question_view(request):
             # Get the course, subject, section, difficulty, and objective based on the posted data
             course = models.Course.objects.get(id=request.POST.get('courseID'))
             subject = models.Subject.objects.get(id=request.POST.get('subjectID'))
-            sections = models.Section.objects.get(id=request.POST.get('sectionID'))
+            section = models.Section.objects.get(id=request.POST.get('sectionID'))
             difficulty = models.Difficulty.objects.get(id=request.POST.get('difficultyID'))
             objective = models.Objectives.objects.get(id=request.POST.get('objectiveID'))
 
             # Assign the related fields to the question instance
             question.course = course
             question.subject = subject  # This assumes subject is a ForeignKey
+            question.section = section  # This assumes section is a ForeignKey
             question.difficulty = difficulty  # This assumes difficulty is a ForeignKey
             question.objective = objective  # This assumes objective is a ForeignKey
 
@@ -251,9 +252,19 @@ def admin_add_question_view(request):
     return render(request, 'quiz/admin_add_question.html', {'questionForm': questionForm})
 
 def get_sections(request):
-    sections = Section.objects.all().values('id', 'section_name')
-    return JsonResponse(list(sections), safe=False)
+    # Fetching sections with related subject data using select_related
+    sections = Section.objects.all().select_related('subject_id')
+    section_data = []
 
+    for section in sections:
+        # Ensure that we are properly accessing subject_name from the related Subject model
+        section_data.append({
+            'id': section.id,
+            'section_name': section.section_name,
+            'subject_name': section.subject_id.subject_name  # This should access the subject name correctly
+        })
+    
+    return JsonResponse(section_data, safe=False)
 
 @login_required(login_url='adminlogin')
 def admin_view_question_view(request):
@@ -262,17 +273,20 @@ def admin_view_question_view(request):
 
 @login_required(login_url='adminlogin')
 def view_question_view(request, pk):
-    course = models.Course.objects.get(id=pk)
-    questions = models.Question.objects.filter(course=course)
-    sections = models.Section.objects.all()
-    difficulties = models.Difficulty.objects.all()
-    objectives = models.Objectives.objects.all()
+    course = get_object_or_404(models.Course, id=pk)
+    questions = models.Question.objects.filter(course=course).select_related('difficulty', 'objective', 'section', 'subject')
+    sections = models.Section.objects.values('id', 'section_name')
+    difficulties = models.Difficulty.objects.values('id', 'name')
+    objectives = models.Objectives.objects.values('id', 'name')
+    subjects = models.Subject.objects.values('id', 'subject_name')
 
     return render(request, 'quiz/view_question.html', {
+        'course': course,
         'questions': questions,
         'sections': sections,
         'difficulties': difficulties,
-        'objectives': objectives
+        'objectives': objectives,
+        'subjects': subjects,
     })
 
 @login_required(login_url='adminlogin')
