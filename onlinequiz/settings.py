@@ -96,6 +96,9 @@ DATABASES = {
         'PASSWORD': 'bvxTiwnBUFvGnjVxMWiIMQzqTcMBLvOe',
         'HOST': 'autorack.proxy.rlwy.net',
         'PORT': '11049',
+        'OPTIONS': {
+            'options': '-c timezone=UTC',
+        },
     }
 }
 
