@@ -15,7 +15,8 @@ from student import forms as SFORM
 from django.contrib.auth.models import User
 from .models import Course
 from django.contrib import messages
-
+from django.http import JsonResponse
+from .models import Section
 
 
 def home_view(request):
@@ -228,26 +229,15 @@ def admin_add_question_view(request):
             # Get the course, subject, section, difficulty, and objective based on the posted data
             course = models.Course.objects.get(id=request.POST.get('courseID'))
             subject = models.Subject.objects.get(id=request.POST.get('subjectID'))
-            section = models.Section.objects.get(id=request.POST.get('sectionID'))
+            sections = models.Section.objects.get(id=request.POST.get('sectionID'))
             difficulty = models.Difficulty.objects.get(id=request.POST.get('difficultyID'))
             objective = models.Objectives.objects.get(id=request.POST.get('objectiveID'))
 
             # Assign the related fields to the question instance
             question.course = course
             question.subject = subject  # This assumes subject is a ForeignKey
-            question.section = section  # This assumes section is a ForeignKey
             question.difficulty = difficulty  # This assumes difficulty is a ForeignKey
             question.objective = objective  # This assumes objective is a ForeignKey
-
-            # Handle the objective-related fields: options or numerical answer        
-            if request.POST.get('sectionID') == 'MCQ':  # Assuming MCQ type
-                question.option1 = request.POST.get('option1')
-                question.option2 = request.POST.get('option2')
-                question.option3 = request.POST.get('option3')
-                question.option4 = request.POST.get('option4')
-                question.correct_answer = request.POST.get('answer')  # Correct option selected
-            elif request.POST.get('sectionID') == 'NUM':  # Assuming Numerical question
-                question.numerical_answer = request.POST.get('numerical_answer')
 
             # Save the question
             question.save()
@@ -259,6 +249,10 @@ def admin_add_question_view(request):
             print("Form is invalid")
 
     return render(request, 'quiz/admin_add_question.html', {'questionForm': questionForm})
+
+def get_sections(request):
+    sections = Section.objects.all().values('id', 'section_name')
+    return JsonResponse(list(sections), safe=False)
 
 
 @login_required(login_url='adminlogin')

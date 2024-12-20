@@ -15,10 +15,10 @@ class Subject(models.Model):
         return self.subject_name
     
 class Section(models.Model):
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    subject_id = models.ForeignKey(Subject, on_delete=models.CASCADE)
     section_name = models.CharField(max_length=50)
     def __str__(self):
-        return self.section_name
+        return f"{self.section_name} ({self.subject_id.subject_name})"
 
 class Difficulty(models.Model):
     name = models.CharField(max_length=255)
@@ -49,7 +49,7 @@ class Question(models.Model):
     option2 = models.CharField(max_length=50)
     option3 = models.CharField(max_length=50)
     option4 = models.CharField(max_length=50)
-    correct_option = models.CharField(max_length=50, blank=True, default=None)
+    correct_option = models.CharField(max_length=50)
 
     def __str__(self):
         return f"{self.get_section_id_display()}: {self.question}"

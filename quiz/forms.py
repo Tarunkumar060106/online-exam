@@ -35,6 +35,7 @@ class QuestionForm(forms.ModelForm):
     sectionID = forms.ModelChoiceField(
         queryset=Section.objects.all(),
         empty_label="Select Section",
+        widget=forms.Select(attrs={'class': 'form-control'}),
         to_field_name="id"
     )
     difficultyID = forms.ModelChoiceField(
