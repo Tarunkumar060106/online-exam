@@ -85,8 +85,12 @@ WSGI_APPLICATION = 'onlinequiz.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'bvxTiwnBUFvGnjVxMWiIMQzqTcMBLvOe',
+        'HOST': 'autorack.proxy.rlwy.net',
+        'PORT': '11049',
     }
 }
 
@@ -148,3 +152,4 @@ EMAIL_HOST_PASSWORD = 'xyz' # host email password required
 # otherwise you will get SMTPAuthenticationError at /contactus
 # this process is required because google blocks apps authentication by default
 EMAIL_RECEIVING_USER = ['to@gmail.com'] # email on which you will receive messages sent from website
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
