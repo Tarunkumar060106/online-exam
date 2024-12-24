@@ -4,19 +4,18 @@
 
 <head>
   <meta charset="utf-8">
-
   <style>
-    /* Sidebar and Header Styles */
-    a:link {
-      text-decoration: none;
-    }
-
+    /* General Reset */
     body {
       margin: 0;
       padding: 0;
       font-family: "Gill Sans", sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; /* Ensures full height of viewport */
     }
 
+    /* Header Styles */
     header {
       position: fixed;
       background: #22242A;
@@ -31,10 +30,6 @@
       text-transform: uppercase;
       font-size: 22px;
       font-weight: 900;
-    }
-
-    .left_area span {
-      color: #19B3D3;
     }
 
     .logout_btn {
@@ -55,6 +50,7 @@
       background: #0B87A6;
     }
 
+    /* Sidebar Styles */
     .sidebar {
       background: #2f323a;
       margin-top: 70px;
@@ -63,8 +59,6 @@
       left: 0;
       width: 250px;
       height: 100%;
-      transition: 0.5s;
-      transition-property: left;
     }
 
     .sidebar .profile_image {
@@ -83,7 +77,6 @@
     .sidebar a {
       color: #fff;
       display: block;
-      width: 100%;
       line-height: 60px;
       text-decoration: none;
       padding-left: 40px;
@@ -95,62 +88,22 @@
       background: #19B3D3;
     }
 
-    .sidebar i {
-      padding-right: 10px;
-    }
-
-    label #sidebar_btn {
-      z-index: 1;
-      color: #fff;
-      position: fixed;
-      cursor: pointer;
-      left: 300px;
-      font-size: 20px;
-      margin: 5px 0;
-      transition: 0.5s;
-      transition-property: color;
-    }
-
-    label #sidebar_btn:hover {
-      color: #19B3D3;
-    }
-
-    #check:checked~.sidebar {
-      left: -190px;
-    }
-
-    #check:checked~.sidebar a span {
-      display: none;
-    }
-
-    #check:checked~.sidebar a {
-      font-size: 20px;
-      margin-left: 170px;
-      width: 80px;
-    }
-
+    /* Content Styles */
     .content {
       margin-left: 250px;
-      background: url(background.png) no-repeat;
-      background-position: center;
+      margin-top: 100px;
+      flex: 1; /* Pushes the footer to the bottom */
+      padding: 20px;
+      background: url(background.png) no-repeat center center;
       background-size: cover;
-      height: 100vh;
-      transition: 0.5s;
-    }
-
-    #check:checked~.content {
-      margin-left: 60px;
-    }
-
-    #check {
-      display: none;
     }
 
     /* Footer Styles */
     footer {
-      padding: 0px 0px 0px 0px;
       background-color: #212529;
-      margin: 0px;
+      color: #ffffff;
+      text-align: center;
+      padding: 20px 0;
     }
 
     .fa {
@@ -167,22 +120,14 @@
       opacity: 0.5;
       text-decoration: none;
     }
-
-    p {
-      text-align: center;
-    }
   </style>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
 </head>
 
 <body>
-  <input type="checkbox" id="check">
-  <!--header area start-->
+  <!-- Header -->
   <header>
-    <label for="check">
-      <i style="left: 210px; margin-top: 19px;" class="fas fa-bars" id="sidebar_btn"></i>
-    </label>
     <div class="left_area">
       <h3>Vizhuchelvam</h3>
     </div>
@@ -190,9 +135,8 @@
       <a href="/logout" class="logout_btn">Logout</a>
     </div>
   </header>
-  <!--header area end-->
 
-  <!--sidebar start-->
+  <!-- Sidebar -->
   <div class="sidebar">
     <center>
       <img src="{% static 'image/admin.png' %}" class="profile_image" alt="">
@@ -204,31 +148,17 @@
     <a href="/admin-course"><i class="fas fa-book"></i><span>Courses</span></a>
     <a href="/admin-question"><i class="fas fa-question-circle"></i><span>Questions</span></a>
   </div>
-  <!--sidebar end-->
 
-  <!--content start-->
+  <!-- Content -->
   <div class="content">
-    <br><br><br><br><br>
     {% block content %}
     {% endblock content %}
-    <br><br><br>
   </div>
-  <!--content end-->
 
-  <!--footer start-->
+  <!-- Footer -->
   <footer>
-    <br>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12 col-sm-12">
-          <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
-            Vizhuchelvam 2024 Copyright &copy;</p><br>
-          </div>
-        </div>
-      </div>
-    </div>
+    Vizhuchelvam 2024 &copy; All rights reserved.
   </footer>
-  <!--footer end-->
 </body>
 
 </html>
