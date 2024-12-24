@@ -261,7 +261,7 @@ def get_sections(request):
         section_data.append({
             'id': section.id,
             'section_name': section.section_name,
-            'subject_name': section.subject_id.subject_name  # This should access the subject name correctly
+            'subject_name': section.subject.subject_name  # This should access the subject name correctly
         })
     
     return JsonResponse(section_data, safe=False)
