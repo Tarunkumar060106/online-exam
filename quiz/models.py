@@ -15,7 +15,7 @@ class Subject(models.Model):
         return self.subject_name
     
 class Section(models.Model):
-    subject_id = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     section_name = models.CharField(max_length=50)
     def __str__(self):
         return f"{self.section_name} ({self.subject_id.subject_name})"
