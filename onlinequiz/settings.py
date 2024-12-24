@@ -31,7 +31,8 @@ ALLOWED_HOSTS = [
     '.vercel.app',
     'localhost',
     'vizhuchelvam.up.railway.app',
-    '127.0.0.1'
+    '127.0.0.1',
+    '54.242.33.26'
 ]
 
 CSRF_TRUSTED_ORIGINS = [ 'https://vizhuchelvam.up.railway.app' ]
@@ -90,14 +91,14 @@ WSGI_APPLICATION = 'onlinequiz.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'bvxTiwnBUFvGnjVxMWiIMQzqTcMBLvOe',
-        'HOST': 'autorack.proxy.rlwy.net',
-        'PORT': '11049',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'vizhuchelvamdb',
+        'USER': 'root',
+        'PASSWORD': 'pass123',
+        'HOST': '0.0.0.0',
+        'PORT': '3306',
         'OPTIONS': {
-            'options': '-c timezone=UTC',
+            'charset': 'utf8mb4',
         },
     }
 }
