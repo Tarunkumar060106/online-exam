@@ -14,7 +14,10 @@ class TeacherSalaryForm(forms.Form):
 class CourseForm(forms.ModelForm):
     class Meta:
         model = models.Course
-        fields = ['course_name', 'question_number', 'total_marks']
+        fields = ['course_name', 'question_number', 'total_marks', 'subjects']
+        widgets = {
+            'subjects': forms.SelectMultiple(attrs={'class': 'form-control'}),
+        }
 
 class SubjectForm(forms.ModelForm):
     class Meta:
