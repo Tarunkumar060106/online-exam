@@ -282,10 +282,12 @@ def get_subjects_by_course(request):
         """, [course_id])
         subject_ids = cursor.fetchall()
 
-    # Fetch subjects by their ids
+    # Fetch subjects using a single query to minimize database hits
     subject_list = []
-    for subject_id in subject_ids:
-        subject = Subject.objects.get(id=subject_id[0])  # subject_id is a tuple (id,)
+    subject_ids = [subject_id[0] for subject_id in subject_ids]  # Extract subject ids from tuples
+    subjects = Subject.objects.filter(id__in=subject_ids)
+
+    for subject in subjects:
         subject_list.append({
             'id': subject.id,
             'name': subject.name
