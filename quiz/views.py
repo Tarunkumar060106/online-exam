@@ -266,6 +266,10 @@ def get_sections(request):
     
     return JsonResponse(section_data, safe=False)
 
+def get_subjects_by_course(request, course_id):
+    subjects = Subject.objects.filter(course_id=course_id).values('id', 'subject_name')
+    return JsonResponse({'subjects': list(subjects)})
+
 @login_required(login_url='adminlogin')
 def admin_view_question_view(request):
     courses= models.Course.objects.all()

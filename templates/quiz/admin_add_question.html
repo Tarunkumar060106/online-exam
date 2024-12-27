@@ -51,7 +51,10 @@
         <!-- Subject Field -->
         <div class="form-group">
             <label for="subject">Subject</label>
-            {% render_field questionForm.subjectID|attr:'required:true' class="form-control" %}
+            <select id="subjectID" name="subjectID" required class="form-control">
+                <option value="">Select Subject</option>
+                <!-- The subjects will be dynamically populated by the AJAX response -->
+            </select>
         </div>
     
         <!-- Section Field -->
@@ -144,6 +147,32 @@ $(document).ready(function () {
     //     sectionSelect.addClass('form-control');
     //     }
     // });
+
+    $('#courseID').change(function () {
+        var courseID = $(this).val();
+        if (courseID) {
+            $.ajax({
+               url: '{% url "get_subjects_by_course" %}',
+               data: { 'course_id': courseID },
+               method: 'GET',
+               success: function(data){
+                var subjectSelect = $('#subjectID');
+                subjectSelect.empty();
+                subjectSelect.append('<option value="">Select Subject</option>');
+
+                //append each data as option now
+                $.each(data, function(index, subject){
+                    subjectSelect.append('<option value="' + subject.id + '">' + subject.subject_name + '</option>');
+                });
+
+                subjectSelect.addClass('form-control');
+               }
+            });
+        } else{
+           $('#subjectID'.empty().append('<option value=">Select Subject</option>'));
+        }
+    })
+
 
     $.ajax({
         url: '{% url "get_sections" %}',

@@ -31,7 +31,7 @@ class QuestionForm(forms.ModelForm):
         to_field_name="id"
     )
     subjectID = forms.ModelChoiceField(
-        queryset=Subject.objects.all(),
+        queryset=Subject.objects.none(),  # Empty initially
         empty_label="Select Subject",
         to_field_name="id"
     )
