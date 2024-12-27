@@ -267,7 +267,7 @@ def get_sections(request):
     
     return JsonResponse(section_data, safe=False)
 
-def get_subjects_by_course(request, course_id):
+def get_subjects_by_course(request):
     course_id = request.GET.get('course_id')
     with connection.cursor() as cursor:
         cursor.execute("""
