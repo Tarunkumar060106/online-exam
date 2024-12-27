@@ -2,7 +2,7 @@ from django import forms
 from . import models
 from django.core.exceptions import ValidationError
 from .models import Question, Course, Section, Difficulty, Subject, Objectives
-from ckeditor.fields import RichTextUploadingField
+from ckeditor.fields import RichTextField
 
 class ContactusForm(forms.Form):
     Name = forms.CharField(max_length=30)
@@ -83,7 +83,7 @@ class QuestionForm(forms.ModelForm):
             'marks', 'negative_marks'
         ]
         widgets = {
-            'question': RichTextUploadingField(attrs={'class': 'form-control'}),
+            'question': RichTextField(),
         }
 
     def clean(self):
