@@ -53,7 +53,7 @@ class Question(models.Model):
     correct_option = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"{self.get_section_id_display()}: {self.question}"
+        return f"{self.section}: {self.question}"
     
 
 class Result(models.Model):
