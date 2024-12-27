@@ -287,14 +287,17 @@ def get_subjects_by_course(request):
         # Fetch subjects by their ids
         subject_list = []
         for subject_id in subject_ids:
-            subject = Subject.objects.get(id=subject_id[0])  # subject_id is a tuple (id,)
-            subject_list.append({
-                'id': subject.id,
-                'name': subject.name
-            })
+            try:
+                subject = Subject.objects.get(id=subject_id[0])  # subject_id is a tuple (id,)
+                subject_list.append({
+                    'id': subject.id,
+                    'name': subject.name
+                })
+            except Subject.DoesNotExist:
+                logging.error(f"Subject with ID {subject_id[0]} does not exist.")
 
         return JsonResponse(subject_list, safe=False)
-    
+
     except Exception as e:
         logging.error(f"Error in get_subjects_by_course: {str(e)}")
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
