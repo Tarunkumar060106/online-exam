@@ -82,9 +82,9 @@ class QuestionForm(forms.ModelForm):
         exclude = [
             'marks', 'negative_marks'
         ]
-        widgets = {
-            'question': RichTextField(),
-        }
+        # widgets = {
+        #     'question': RichTextField(),
+        # }
 
     def clean(self):
         cleaned_data = super().clean()
