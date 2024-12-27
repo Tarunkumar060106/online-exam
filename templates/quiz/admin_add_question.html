@@ -136,13 +136,13 @@ $(document).ready(function () {
         if (courseID) {
             $.ajax({
                 url: '{% url "get_subjects_by_course" %}',
-                data: { 'course_id': courseID },  // Pass the dynamic course_id
+                data: { 'course_id': 5 },  // Hardcode the course_id temporarily for testing
                 method: 'GET',
                 success: function (data) {
-                    console.log('Received subjects:', data);  // Log the response
+                    console.log('Received subjects:', data);
                     var subjectSelect = $('#subjectID');
-                    subjectSelect.empty();  // Clear existing options
-                    subjectSelect.append('<option value="">Select Subject</option>');  // Default option
+                    subjectSelect.empty();
+                    subjectSelect.append('<option value="">Select Subject</option>');
 
                     // Append each subject as an option
                     $.each(data, function (index, subject) {
@@ -152,7 +152,9 @@ $(document).ready(function () {
                     subjectSelect.addClass('form-control');
                 },
                 error: function(xhr, status, error) {
-                    console.log("AJAX error:", error);
+                    console.log("AJAX Request failed. Status:", status);
+                    console.log("Error:", error);
+                    console.log("Response:", xhr.responseText); // Log the response from the server
                 }
             });
         } else {
