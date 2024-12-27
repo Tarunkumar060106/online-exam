@@ -75,7 +75,7 @@ class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
         fields = [
-            'courseID', 'subjectID', 'sectionID','difficultyID','objectiveID', 'question',
+            'courseID', 'subjectID', 'sectionID','difficultyID','objectiveID', 'question', 'question_img',
             'option1', 'option2', 'option3', 'option4',
             'numerical_answer', 'correct_option', 
         ]
