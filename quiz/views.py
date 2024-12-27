@@ -17,6 +17,7 @@ from .models import Course
 from django.contrib import messages
 from django.http import JsonResponse
 from .models import Section, Subject
+from django.db import connection
 
 
 def home_view(request):
@@ -267,8 +268,22 @@ def get_sections(request):
     return JsonResponse(section_data, safe=False)
 
 def get_subjects_by_course(request, course_id):
-    subjects = Subject.objects.filter(course_id=course_id).values('id', 'subject_name')
-    return JsonResponse({'subjects': list(subjects)})
+    course_id = request.GET.get('course_id')
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT subject_id
+            FROM quiz_course_subjects
+            WHERE course_id = %s
+        """, [course_id])
+        subject_ids = cursor.fetchall()
+    subject_list=[]
+    for subject_id in subject_ids:
+        subject = models.Subject.objects.get(id=subject_id[0])
+        subject_list.append({
+            'id': subject.id,
+            'name': subject.subject_name
+        })
+    return JsonResponse(subject_list, safe=False)
 
 @login_required(login_url='adminlogin')
 def admin_view_question_view(request):
