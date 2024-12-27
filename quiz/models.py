@@ -1,6 +1,6 @@
 from django.db import models
 from student.models import Student
-from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 
 class Course(models.Model):
    course_name = models.CharField(max_length=50)
@@ -42,7 +42,7 @@ class Question(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
     difficulty = models.ForeignKey('Difficulty', on_delete=models.CASCADE)
     objective = models.ForeignKey('Objectives', on_delete=models.CASCADE)
-    question = RichTextField()
+    question = RichTextUploadingField()
     marks = models.PositiveIntegerField(default=4)
     negative_marks = models.IntegerField(default=-1)
     option1 = models.CharField(max_length=50)

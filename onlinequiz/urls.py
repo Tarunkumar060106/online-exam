@@ -2,6 +2,10 @@ from django.urls import path,include
 from django.contrib import admin
 from quiz import views
 from django.contrib.auth.views import LogoutView,LoginView
+from ckeditor_uploader import views as ckeditor_views
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
    
     path('admin/', admin.site.urls),
@@ -52,5 +56,10 @@ urlpatterns = [
     path('get_sections', views.get_sections,name='get_sections'),
     path('get_subjects_by_course', views.get_subjects_by_course, name='get_subjects_by_course'),
 
-
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('ckeditor/upload/', ckeditor_views.upload, name='ckeditor-upload'),
+    path('ckeditor/browse/', ckeditor_views.browse, name='ckeditor-browse'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

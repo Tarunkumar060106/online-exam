@@ -19,6 +19,9 @@ TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 STATIC_DIR=os.path.join(BASE_DIR,'static')
 MEDIA_ROOT=os.path.join(BASE_DIR,'static')
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -54,7 +57,7 @@ INSTALLED_APPS = [
     'student',
     'widget_tweaks',
     'ckeditor',
-
+    'ckeditor_uploader'
 ]
 
 
@@ -70,7 +73,13 @@ MIDDLEWARE = [
 ]
 CSRF_COOKIE_SECURE=False
 ROOT_URLCONF = 'onlinequiz.urls'
-
+CKEDITOR_5 = {
+    'default': {
+        'toolbar': ['bold', 'italic', 'link', 'imageUpload', 'blockQuote'],
+        'extraPlugins': 'imageUpload',  # Enable image upload plugin
+        'imageUploadUrl': '/ckeditor/upload/',  # URL for the image upload endpoint
+    },
+}
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 TEMPLATES = [

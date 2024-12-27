@@ -82,9 +82,6 @@ class QuestionForm(forms.ModelForm):
         exclude = [
             'marks', 'negative_marks'
         ]
-        widgets = {
-            'question': CKEditorWidget(),
-        }
 
     def clean(self):
         cleaned_data = super().clean()
