@@ -5,11 +5,11 @@ class Course(models.Model):
    course_name = models.CharField(max_length=50)
    question_number = models.PositiveIntegerField()
    total_marks = models.PositiveIntegerField()
+   subjects = models.ManyToManyField('Subject')
    def __str__(self):
         return self.course_name
    
 class Subject(models.Model):
-    course=models.ForeignKey(Course,on_delete=models.CASCADE)
     subject_name=models.CharField(max_length=50)
     def __str__(self):
         return self.subject_name
