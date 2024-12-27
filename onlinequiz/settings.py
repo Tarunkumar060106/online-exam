@@ -73,17 +73,17 @@ MIDDLEWARE = [
 ]
 CSRF_COOKIE_SECURE=False
 ROOT_URLCONF = 'onlinequiz.urls'
-CKEDITOR_5 = {
-    'default': {
-        'toolbar': ['bold', 'italic', 'link', 'imageUpload', 'blockQuote'],
-        'extraPlugins': 'imageUpload',  # Enable image upload plugin
-        'imageUploadUrl': '/ckeditor/upload/',  # URL for the image upload endpoint
-    },
-    'W001': {
-        'ignore': True,
-    },
-}
 CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': [
+            ['Bold', 'Italic', 'Underline', 'Strike', '-', 'Link', 'Unlink', '-', 'Image', 'CodeSnippet'],
+        ],
+        'extraPlugins': 'codesnippet,image2',  # Enable image upload and pasting
+    }
+}
 
 TEMPLATES = [
     {
