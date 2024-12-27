@@ -42,7 +42,7 @@ class Question(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
     difficulty = models.ForeignKey('Difficulty', on_delete=models.CASCADE)
     objective = models.ForeignKey('Objectives', on_delete=models.CASCADE)
-    question = models.RichTextField()
+    question = RichTextField()
     marks = models.PositiveIntegerField(default=4)
     negative_marks = models.IntegerField(default=-1)
     option1 = models.CharField(max_length=50)
