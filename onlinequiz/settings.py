@@ -79,6 +79,9 @@ CKEDITOR_5 = {
         'extraPlugins': 'imageUpload',  # Enable image upload plugin
         'imageUploadUrl': '/ckeditor/upload/',  # URL for the image upload endpoint
     },
+    'W001': {
+        'ignore': True,
+    },
 }
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
