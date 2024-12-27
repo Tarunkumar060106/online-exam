@@ -39,7 +39,7 @@
 <div class="form-container">
     <h2>Add a Question</h2>
 
-    <form method="POST" autocomplete="off">
+    <form method="POST" autocomplete="off" enctype="multipart/form-data">
         {% csrf_token %}
         
         <!-- Course Field -->

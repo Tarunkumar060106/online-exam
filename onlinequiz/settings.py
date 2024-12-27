@@ -81,7 +81,8 @@ CKEDITOR_CONFIGS = {
         'toolbar': [
             ['Bold', 'Italic', 'Underline', 'Strike', '-', 'Link', 'Unlink', '-', 'Image', 'CodeSnippet'],
         ],
-        'extraPlugins': 'codesnippet,image2',  # Enable image upload and pasting
+        'extraPlugins': 'image2,uploadimage',  # Enable image upload and pasting
+        'filebrowserUploadUrl': '/ckeditor/upload/',
     }
 }
 
