@@ -2,6 +2,7 @@ from django import forms
 from . import models
 from django.core.exceptions import ValidationError
 from .models import Question, Course, Section, Difficulty, Subject, Objectives
+from ckeditor.widgets import CKEditorWidget
 
 class ContactusForm(forms.Form):
     Name = forms.CharField(max_length=30)
@@ -82,7 +83,7 @@ class QuestionForm(forms.ModelForm):
             'marks', 'negative_marks'
         ]
         widgets = {
-            'question': forms.Textarea(attrs={'rows': 3, 'cols': 50})
+            'question': CKEditorWidget(),
         }
 
     def clean(self):

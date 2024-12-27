@@ -53,8 +53,10 @@ INSTALLED_APPS = [
     'teacher',
     'student',
     'widget_tweaks',
+    'ckeditor',
 
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -68,6 +70,8 @@ MIDDLEWARE = [
 ]
 CSRF_COOKIE_SECURE=False
 ROOT_URLCONF = 'onlinequiz.urls'
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
 
 TEMPLATES = [
     {
