@@ -131,10 +131,12 @@
 $(document).ready(function () {
     $('#courseID').change(function () {
         var courseID = $(this).val();
+        console.log('Selected Course ID:', courseID);  // Log courseID to check if it's captured
+        
         if (courseID) {
             $.ajax({
                 url: '{% url "get_subjects_by_course" %}',
-                data: { 'course_id': courseID },
+                data: { 'course_id': courseID },  // Pass course_id as query parameter
                 method: 'GET',
                 success: function (data) {
                     var subjectSelect = $('#subjectID');
