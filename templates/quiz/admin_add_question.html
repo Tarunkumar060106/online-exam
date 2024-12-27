@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/adapters/jquery.js' %}"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -83,7 +85,7 @@
             {{ questionForm.question_img|add_class:"form-control" }}
         </div>
         {% if question.question_img %}
-            <img src="{{ question.question_img.url }}" alt="Question Image" class="img-thumbnail">
+        <img src="{{ question.question_img.url }}" alt="Question Image" class="img-thumbnail">
         {% endif %}
         <!-- Question Field -->
         <div class="form-group">
@@ -143,7 +145,7 @@ $(document).ready(function () {
         if (courseID) {
             $.ajax({
                 url: '{% url "get_subjects_by_course" %}',
-                data: { 'course_id': 5 },  // Hardcode the course_id temporarily for testing
+                data: { 'course_id': courseID },  // Hardcode the course_id temporarily for testing
                 method: 'GET',
                 success: function (data) {
                     console.log('Received subjects:', data);
