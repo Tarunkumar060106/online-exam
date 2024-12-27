@@ -79,6 +79,11 @@
             <label for="objective">Objective</label>
             {% render_field questionForm.objectiveID|attr:'required:true' class="form-control" %}
         </div>
+
+        <div class="form-group">
+            <label for="question">Question</label>
+            {% render_field questionForm.question_img|class="form-control" placeholder="Question Image" %}
+        </div>
     
         <!-- Question Field -->
         <div class="form-group">
