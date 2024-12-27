@@ -298,7 +298,7 @@ def get_subjects_by_course(request):
                 subject = Subject.objects.get(id=subject_id[0])
                 subject_list.append({
                     'id': subject.id,
-                    'name': subject.name
+                    'name': subject.subject_name
                 })
 
             logger.debug(f"Returning subject list: {subject_list}")
