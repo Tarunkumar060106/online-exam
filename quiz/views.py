@@ -268,14 +268,19 @@ def get_sections(request):
     
     return JsonResponse(section_data, safe=False)
 
+logger = logging.getLogger(__name__)
 def get_subjects_by_course(request):
+    # Log the entire GET request to see the data
+    logger.debug(f"GET Request Data: {request.GET}")
+
     course_id = request.GET.get('course_id')
+    logger.debug(f"Received course_id: {course_id}")
 
     if not course_id:
         return JsonResponse({'error': 'Course ID is required'}, status=400)
 
+    # Now log the SQL execution process
     try:
-        # Querying the quiz_course_subjects table directly
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT subject_id
@@ -284,23 +289,24 @@ def get_subjects_by_course(request):
             """, [course_id])
             subject_ids = cursor.fetchall()
 
-        # Fetch subjects by their ids
-        subject_list = []
-        for subject_id in subject_ids:
-            try:
-                subject = Subject.objects.get(id=subject_id[0])  # subject_id is a tuple (id,)
+            logger.debug(f"Fetched subject IDs: {subject_ids}")
+
+            # Fetch subjects by their ids
+            subject_list = []
+            for subject_id in subject_ids:
+                logger.debug(f"Fetching subject with ID: {subject_id[0]}")
+                subject = Subject.objects.get(id=subject_id[0])
                 subject_list.append({
                     'id': subject.id,
                     'name': subject.name
                 })
-            except Subject.DoesNotExist:
-                logging.error(f"Subject with ID {subject_id[0]} does not exist.")
 
-        return JsonResponse(subject_list, safe=False)
+            logger.debug(f"Returning subject list: {subject_list}")
+            return JsonResponse(subject_list, safe=False)
 
     except Exception as e:
-        logging.error(f"Error in get_subjects_by_course: {str(e)}")
-        return JsonResponse({'error': 'Internal Server Error'}, status=500)
+        logger.error(f"Error occurred: {e}")
+        return JsonResponse({'error': 'Server error occurred'}, status=500)
 
 @login_required(login_url='adminlogin')
 def admin_view_question_view(request):

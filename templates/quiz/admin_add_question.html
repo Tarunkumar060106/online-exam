@@ -131,14 +131,15 @@
 $(document).ready(function () {
     $('#courseID').change(function () {
         var courseID = $(this).val();
-        console.log('Selected Course ID:', courseID);  // Log courseID to check if it's captured
+        console.log('Selected Course ID:', courseID);  // Log the courseID
         
         if (courseID) {
             $.ajax({
                 url: '{% url "get_subjects_by_course" %}',
-                data: { 'course_id': courseID },  // Pass course_id as query parameter
+                data: { 'course_id': courseID },  // Pass the dynamic course_id
                 method: 'GET',
                 success: function (data) {
+                    console.log('Received subjects:', data);  // Log the response
                     var subjectSelect = $('#subjectID');
                     subjectSelect.empty();  // Clear existing options
                     subjectSelect.append('<option value="">Select Subject</option>');  // Default option
@@ -149,6 +150,9 @@ $(document).ready(function () {
                     });
 
                     subjectSelect.addClass('form-control');
+                },
+                error: function(xhr, status, error) {
+                    console.log("AJAX error:", error);
                 }
             });
         } else {
