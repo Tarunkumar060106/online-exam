@@ -45,7 +45,7 @@
         <!-- Course Field -->
         <div class="form-group">
             <label for="course">Course</label>
-            {% render_field questionForm.courseID|attr:'required:true' class="form-control" %}
+            {% render_field questionForm.courseID|attr:'required:true' id:"courseID" class="form-control" %}
         </div>
     
         <!-- Subject Field -->
@@ -136,7 +136,7 @@ $(document).ready(function () {
         if (courseID) {
             $.ajax({
                 url: '{% url "get_subjects_by_course" %}',
-                data: { 'course_id': 5 },  // Pass course_id as query parameter
+                data: { 'course_id': courseID },  // Pass course_id as query parameter
                 method: 'GET',
                 success: function (data) {
                     var subjectSelect = $('#subjectID');
