@@ -78,11 +78,9 @@ CKEDITOR_IMAGE_BACKEND = "pillow"
 
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': [
-            ['Bold', 'Italic', 'Underline', 'Strike', '-', 'Link', 'Unlink', '-', 'Image', 'CodeSnippet'],
-        ],
-        'extraPlugins': 'image2,uploadimage',  # Enable image upload and pasting
-        'filebrowserUploadUrl': '/ckeditor/upload/',
+        'toolbar': 'Full',
+        'filebrowserUploadUrl': '/ckeditor/upload/',  # Upload URL for images
+        'filebrowserUploadMethod': 'form',
     }
 }
 
