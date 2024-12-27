@@ -33,7 +33,8 @@ ALLOWED_HOSTS = [
     'localhost',
     'vizhuchelvam.up.railway.app',
     '127.0.0.1',
-    '54.242.33.26'
+    '54.242.33.26',
+    '54.236.6.183'
 ]
 
 CSRF_TRUSTED_ORIGINS = [ 'https://vizhuchelvam.up.railway.app' ]
