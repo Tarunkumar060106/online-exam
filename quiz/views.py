@@ -18,6 +18,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from .models import Section, Subject
 from django.db import connection
+import logging
 
 
 def home_view(request):
@@ -273,27 +274,30 @@ def get_subjects_by_course(request):
     if not course_id:
         return JsonResponse({'error': 'Course ID is required'}, status=400)
 
-    # Querying the quiz_course_subjects table directly
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT subject_id
-            FROM quiz_course_subjects
-            WHERE course_id = %s
-        """, [course_id])
-        subject_ids = cursor.fetchall()
+    try:
+        # Querying the quiz_course_subjects table directly
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT subject_id
+                FROM quiz_course_subjects
+                WHERE course_id = %s
+            """, [course_id])
+            subject_ids = cursor.fetchall()
 
-    # Fetch subjects using a single query to minimize database hits
-    subject_list = []
-    subject_ids = [subject_id[0] for subject_id in subject_ids]  # Extract subject ids from tuples
-    subjects = Subject.objects.filter(id__in=subject_ids)
+        # Fetch subjects by their ids
+        subject_list = []
+        for subject_id in subject_ids:
+            subject = Subject.objects.get(id=subject_id[0])  # subject_id is a tuple (id,)
+            subject_list.append({
+                'id': subject.id,
+                'name': subject.name
+            })
 
-    for subject in subjects:
-        subject_list.append({
-            'id': subject.id,
-            'name': subject.name
-        })
-
-    return JsonResponse(subject_list, safe=False)
+        return JsonResponse(subject_list, safe=False)
+    
+    except Exception as e:
+        logging.error(f"Error in get_subjects_by_course: {str(e)}")
+        return JsonResponse({'error': 'Internal Server Error'}, status=500)
 
 @login_required(login_url='adminlogin')
 def admin_view_question_view(request):
