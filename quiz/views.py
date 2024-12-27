@@ -255,7 +255,7 @@ def admin_add_question_view(request):
 
 def get_sections(request):
     # Fetching sections with related subject data using select_related
-    sections = Section.objects.all().select_related('subject')
+    sections = Section.objects.all().select_related('subject_id')
     section_data = []
 
     for section in sections:
