@@ -269,6 +269,11 @@ def get_sections(request):
 
 def get_subjects_by_course(request):
     course_id = request.GET.get('course_id')
+
+    if not course_id:
+        return JsonResponse({'error': 'Course ID is required'}, status=400)
+
+    # Querying the quiz_course_subjects table directly
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT subject_id
@@ -276,13 +281,16 @@ def get_subjects_by_course(request):
             WHERE course_id = %s
         """, [course_id])
         subject_ids = cursor.fetchall()
-    subject_list=[]
+
+    # Fetch subjects by their ids
+    subject_list = []
     for subject_id in subject_ids:
-        subject = models.Subject.objects.get(id=subject_id[0])
+        subject = Subject.objects.get(id=subject_id[0])  # subject_id is a tuple (id,)
         subject_list.append({
             'id': subject.id,
-            'name': subject.subject_name
+            'name': subject.name
         })
+
     return JsonResponse(subject_list, safe=False)
 
 @login_required(login_url='adminlogin')
