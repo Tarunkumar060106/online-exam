@@ -129,50 +129,31 @@
 
 <script>
 $(document).ready(function () {
-    // Fetch and populate sections when the page loads
-    // $.ajax({
-    // url: '{% url "get_sections" %}',
-    // method: 'GET',
-    // success: function(data) {
-    //     var sectionSelect = $('#sectionID');
-    //     sectionSelect.empty();  // Clear the existing options
-    //     sectionSelect.append('<option value="">Select Section</option>');  // Default option
-
-    //     // Append each section as an option
-    //     $.each(data, function(index, section) {
-    //         sectionSelect.append('<option value="' + section.id + '">' + section.section_name + '</option>');
-    //     });
-
-    //     // Apply the same class as other select elements
-    //     sectionSelect.addClass('form-control');
-    //     }
-    // });
-
     $('#courseID').change(function () {
         var courseID = $(this).val();
         if (courseID) {
             $.ajax({
-               url: '{% url "get_subjects_by_course" %}',
-               data: { 'course_id': courseID },
-               method: 'GET',
-               success: function(data){
-                var subjectSelect = $('#subjectID');
-                subjectSelect.empty();
-                subjectSelect.append('<option value="">Select Subject</option>');
+                url: '{% url "get_subjects_by_course" %}',
+                data: { 'course_id': courseID },
+                method: 'GET',
+                success: function (data) {
+                    var subjectSelect = $('#subjectID');
+                    subjectSelect.empty();  // Clear existing options
+                    subjectSelect.append('<option value="">Select Subject</option>');  // Default option
 
-                //append each data as option now
-                $.each(data, function(index, subject){
-                    subjectSelect.append('<option value="' + subject.id + '">' + subject.subject_name + '</option>');
-                });
+                    // Append each subject as an option
+                    $.each(data, function (index, subject) {
+                        subjectSelect.append('<option value="' + subject.id + '">' + subject.name + '</option>');
+                    });
 
-                subjectSelect.addClass('form-control');
-               }
+                    subjectSelect.addClass('form-control');
+                }
             });
-        } else{
-           $('#subjectID'.empty().append('<option value=">Select Subject</option>'));
+        } else {
+            // Clear the subject field if no course is selected
+            $('#subjectID').empty().append('<option value="">Select Subject</option>');
         }
-    })
-
+    });
 
     $.ajax({
         url: '{% url "get_sections" %}',
